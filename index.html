@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	
+	<title>Horizontally Scrolling Site from CSS-Tricks</title>
+	
+	<link rel="stylesheet" href="style.css">
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="jquery.mousewheel.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script>
+	var drawn = false;
+	function isScrolledIntoView(el) {
+		var elemRight = el[0].getBoundingClientRect().right;
+		var elemLeft = el[0].getBoundingClientRect().left;
+		var isVisible = elemLeft <= 960;
+		return isVisible;
+	}
+	function makeDonut() {
+		var width = 860,
+			height = 400,
+			radius = Math.min(width, height) / 2 - 10;
+
+		var data = d3.range(10).map(Math.random).sort(d3.descending);
+
+		var color = d3.scale.category20();
+
+		var arc = d3.svg.arc()
+			.outerRadius(radius);
+
+		var pie = d3.layout.pie();
+
+		var svg = d3.select("#fill").append("svg")
+			.datum(data)
+			.attr("width", width)
+			.attr("height", height)
+		  .append("g")
+			.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+		var arcs = svg.selectAll("g.arc")
+			.data(pie)
+		  .enter().append("g")
+			.attr("class", "arc");
+
+		arcs.append("path")
+			.attr("fill", function(d, i) { return color(i); })
+		  .transition()
+			.ease("linear")
+			.duration(3000)
+			.attrTween("d", tweenPie)
+		  .transition()
+			.ease("elastic")
+			.delay(function(d, i) { return 2000 + i * 50; })
+			.duration(750)
+			.attrTween("d", tweenDonut);
+
+		function tweenPie(b) {
+		  b.innerRadius = 0;
+		  var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
+		  return function(t) { return arc(i(t)); };
+		}
+
+		function tweenDonut(b) {
+		  b.innerRadius = radius * .6;
+		  var i = d3.interpolate({innerRadius: 0}, b);
+		  return function(t) { return arc(i(t)); };
+		}
+	}
+	$(function(){
+		$("#page-wrap").wrapInner("<table cellspacing='30'><tr>");
+		$(".post").wrap("<td></td>");
+		$("body").mousewheel(function(event, delta) {
+			this.scrollLeft -= (delta * 30);
+			event.preventDefault();
+			if (drawn == false) {
+				if (isScrolledIntoView($("#fill"))) {
+					makeDonut();
+					drawn = true;
+				}
+			}
+		});   
+	});
+	</script>
+</head>
+
+<body>
+	
+	<div id="section1">
+	    <h1>Horizontally Scrolling Site</h1>
+	</div>
+	
+
+	<div id="page-wrap">
+		
+		<div class="post">
+			<h2>Post Title Example One</h2>
+			
+			<p>By <a href="http://css-tricks.com"><strong>CSS</strong>-Tricks</a></p>
+			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse aliquet arcu a ipsum. Nunc arcu est, pulvinar vitae, consectetuer ac, pellentesque interdum, augue. Fusce iaculis nulla et sapien. Aliquam erat volutpat. Etiam iaculis turpis nec libero. Nam adipiscing ullamcorper quam. Pellentesque erat. Sed hendrerit. Duis id nisl. Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.</p>
+			
+			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse aliquet arcu a ipsum. Nunc arcu est, pulvinar vitae, consectetuer ac, pellentesque interdum, augue. Fusce iaculis nulla et sapien. Aliquam erat volutpat. Etiam iaculis turpis nec libero. Nam adipiscing ullamcorper quam. Pellentesque erat. Sed hendrerit. Duis id nisl. Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.</p>
+			<ul class="nav">
+            <li>1</li>
+            <li><a href="#section2">2</a></li>
+            <li><a href="#section3">3</a></li>
+            <li><a href="#section4">4</a></li>
+            <li><a href="#section5">5</a></li>
+            <li><a href="#section6">6</a></li>
+	        </ul>
+		</div>
+		
+		<div class="post" id="section2">
+			<h2>Post Title Example Two</h2>
+			
+			<p>By <a href="http://css-tricks.com"><strong>CSS</strong>-Tricks</a></p>
+			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse aliquet arcu a ipsum. Nunc arcu est, pulvinar vitae, consectetuer ac, pellentesque interdum, augue. Fusce iaculis nulla et sapien. Aliquam erat volutpat. Etiam iaculis turpis nec libero. Nam adipiscing ullamcorper quam. Pellentesque erat. Sed hendrerit. Duis id nisl. Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.</p>
+			
+			<ul class="nav">
+            <li><a href="#section1">1</a></li>
+            <li>2</li>
+            <li><a href="#section3">3</a></li>
+            <li><a href="#section4">4</a></li>
+            <li><a href="#section5">5</a></li>
+            <li><a href="#section6">6</a></li>
+	        </ul>
+		</div>
+		
+		<div class="post"  id="section3">
+			<h2>Post Title Example Three</h2>
+			<p>By <a href="http://css-tricks.com"><strong>CSS</strong>-Tricks</a></p>
+			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse aliquet arcu a ipsum. Nunc arcu est, pulvinar vitae, consectetuer ac, pellentesque interdum, augue. Fusce iaculis nulla et sapien. Aliquam erat volutpat. Etiam iaculis turpis nec libero. Nam adipiscing ullamcorper quam. Pellentesque erat. Sed hendrerit. Duis id nisl. Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.</p>
+			
+			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse aliquet arcu a ipsum. Nunc arcu est, pulvinar vitae, consectetuer ac, pellentesque interdum, augue. Fusce iaculis nulla et sapien. Aliquam erat volutpat. Etiam iaculis turpis nec libero. Nam adipiscing ullamcorper quam. Pellentesque erat. Sed hendrerit. Duis id nisl. Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.</p>
+			
+			<ul class="nav">
+            <li><a href="#section1">1</a></li>
+            <li><a href="#section2">2</a></li>
+            <li>3</li>
+            <li><a href="#section4">4</a></li>
+            <li><a href="#section5">5</a></li>
+            <li><a href="#section5">5</a></li>
+	        </ul>
+	        
+		</div>
+		
+		<div class="post" id="section4">
+			<h2>Post Title Example Four</h2>
+			<p>By <a href="http://css-tricks.com"><strong>CSS</strong>-Tricks</a></p>
+			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse aliquet arcu a ipsum. Nunc arcu est, pulvinar vitae, consectetuer ac, pellentesque interdum, augue. Fusce iaculis nulla et sapien. Aliquam erat volutpat. Etiam iaculis turpis nec libero. Nam adipiscing ullamcorper quam. Pellentesque erat. Sed hendrerit. Duis id nisl. Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.</p>
+			<ul class="nav">
+                <li><a href="#section1">1</a></li>
+                <li><a href="#section2">2</a></li>
+                <li><a href="#section3">3</a></li>
+                <li>4</li>
+                <li><a href="#section5">5</a></li>
+                <li><a href="#section6">6</a></li>
+                </ul>
+		</div>
+		
+		<div class="post" id="fill" >
+		<div id="section5">
+		<h2>Post Title Example Five</h2>
+		</div>
+            <ul class="nav">
+                <li><a href="#section1">1</a></li>
+                <li><a href="#section2">2</a></li>
+                <li><a href="#section3">3</a></li>
+                <li><a href="#section4">4</a></li>
+                <li>5</li>
+                <li><a href="#section6">6</a></li>
+                </ul>
+		</div>
+		
+		<div class="post" id="section6">
+			<h2>Post Title Example Six</h2>
+			<p>By <a href="http://css-tricks.com"><strong>CSS</strong>-Tricks</a></p>
+			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse aliquet arcu a ipsum. Nunc arcu est, pulvinar vitae, consectetuer ac, pellentesque interdum, augue. Fusce iaculis nulla et sapien. Aliquam erat volutpat. Etiam iaculis turpis nec libero. Nam adipiscing ullamcorper quam. Pellentesque erat. Sed hendrerit. Duis id nisl. Cras arcu mauris, mollis vel, convallis Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.</p>
+			
+			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse aliquet arcu a ipsum. Nunc arcu est, pulvinar vitae, consectetuer ac, pellentesque interdum, augue. Fusce iaculis nulla et sapien. Aliquam erat volutpat. Etiam iaculis turpis nec libero. Nam adipiscing ullamcorper quam. Pellentesque erat. Sed hendrerit. Duis id nisl. Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.</p>
+			
+			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse aliquet arcu a ipsum. Nunc arcu est, pulvinar vitae, consectetuer ac, pellentesque interdum, augue. Fusce iaculis nulla et sapien. Aliquam erat volutpat. Etiam iaculis turpis nec libero. Nam adipiscing ullamcorper quam. Pellentesque erat. Sed hendrerit. Duis id nisl. Cras arcu mauris, mollis vel, convallis non, elementum a, tortor. Donec ac est eget elit consequat sollicitudin. In id odio quis tortor volutpat mollis. Nulla iaculis lobortis est. Pellentesque in elit vitae nulla tempus euismod. Nam non erat in lacus rutrum malesuada. Donec commodo purus sed quam posuere eleifend. Nam accumsan.</p>
+		</div>
+	
+	 <ul class="nav">
+                <li><a href="#section1">1</a></li>
+                <li><a href="#section2">2</a></li>
+                <li><a href="#section3">3</a></li>
+                <li><a href="#section4">4</a></li>
+                <li><a href="#section5">5</a></li>
+                <li>6</li>
+                </ul>
+	</div>
+	
+</body>
+
+</html>
