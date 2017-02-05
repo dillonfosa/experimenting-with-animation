@@ -1,4 +1,4 @@
-# experimenting-with-animation-
+# experimenting-with-animation
 
 I utilized part of this tutorial https://tympanus.net/codrops/2010/06/02/smooth-vertical-or-horizontal-page-scrolling-with-jquery/
 Combined uses of CSS to created a form of simple navigation.
